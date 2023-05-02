@@ -1,0 +1,27 @@
+services:
+    # ngnix
+    ngnix:
+        image: nginx:latest
+        ports:
+            - "82:82"
+        volumes:
+            -   ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+            -   ./src/workly:/var/www/workly
+    php:
+        build:
+            dockerfile: ./php/Dockerfile
+        volumes:
+            - ./src/workly:/var/www/workly
+    db:
+        image: postgres:14.7
+        volumes:
+            - ./docker/pg/data:/var/lib/postgresql/data
+        ports:
+            - "5433:5432"
+        restart: always
+        environment:
+            POSTGRES_DB: workly
+            POSTGRES_USER: adminworkly
+            POSTGRES_PASSWORD: WorklY*_*2016
+            POSTGRES_HOST_AUTH_METHOD: "md5"
+            POSTGRES_INITDB_ARGS: "--auth-host=md5"
